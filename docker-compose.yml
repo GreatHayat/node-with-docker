@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  db:
+    restart: always
+    image: postgres
+    container_name: todo-db-container
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker123
+      POSTGRES_DB: dockerdb
+
+  web:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: todo-app-container
+    entrypoint: ["sh", "./docker-entrypoint.sh"]
+    environment:
+      NODE_ENV: development
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
